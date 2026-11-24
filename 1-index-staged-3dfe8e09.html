@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>調式綜合測驗 · 旋律換音,換調式｜TCMC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--charcoal:#2E3A3F;--teal:#0B6E6E;--teal-bright:#2FBFAA;--gold:#E8A33D;--green:#33D17A;--amber:#F2B84B;--paper:#EAF2F1;--muted:#8FA3A0;--danger:#E2685A;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:radial-gradient(1200px 600px at 20% -10%, #33424A 0%, var(--charcoal) 55%, #232C30 100%);color:var(--paper);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;min-height:100vh;}
+  .wrap{max-width:640px;margin:0 auto;padding:28px 18px 60px;}
+  header{margin-bottom:22px;}
+  .eyebrow{font-size:12px;letter-spacing:.14em;color:var(--teal-bright);font-weight:700;text-transform:uppercase;margin-bottom:6px;}
+  h1{font-family:"Noto Serif TC",serif;font-size:clamp(24px,4vw,32px);margin:0 0 6px;font-weight:700;color:#fff;letter-spacing:.02em;}
+  h1 .en{display:block;font-size:13px;letter-spacing:.14em;font-weight:500;color:var(--teal-bright);text-transform:uppercase;margin-top:2px;}
+  .fact{display:inline-block;font-size:12.5px;font-weight:700;color:var(--gold);border:1px solid rgba(232,163,61,.45);border-radius:999px;padding:4px 12px;margin:6px 0 10px;}
+  .sub{color:var(--paper);font-size:14px;line-height:1.8;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));border:1px solid rgba(234,242,241,0.09);border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+  .card h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:700;}
+  #hint{background:rgba(232,163,61,0.14);border:1px solid rgba(232,163,61,0.35);color:var(--paper);font-size:13px;line-height:1.6;}
+  .btn{font-family:inherit;cursor:pointer;transition:transform .1s ease, opacity .15s ease, background .15s ease;padding:11px 16px;border-radius:10px;border:1.5px solid rgba(234,242,241,0.15);font-size:14px;font-weight:700;letter-spacing:.02em;background:rgba(255,255,255,0.06);color:var(--paper);}
+  .btn:active{transform:scale(0.97)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.pri{background:var(--teal-bright);border-color:var(--teal-bright);color:#0d1f1d}
+  .btn.secb{background:rgba(255,255,255,0.06);color:var(--paper)}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 2px}
+  .cap{font-size:12px;color:var(--muted);margin:8px 0 4px}
+  .cap.grp{font-weight:700;color:var(--paper);margin-top:12px}
+  .choices{display:flex;flex-wrap:wrap;gap:8px}
+  .btn.ch{flex:1 1 44%;min-width:132px;font-weight:600;text-align:left;padding:10px 12px;background:rgba(255,255,255,0.02)}
+  .btn.ch:hover:not(:disabled){border-color:var(--teal-bright)}
+  .btn.ch.sel{background:rgba(47,191,170,0.16);border-color:var(--teal-bright);color:#fff}
+  .btn.ch:disabled{opacity:.8;cursor:default}
+  .btn.bok{background:var(--green);border-color:var(--green);color:#0d1f1d}
+  .btn.bbad{background:var(--danger);border-color:var(--danger);color:#fff}
+  .btn.bok:disabled,.btn.bbad:disabled{opacity:1}
+  .verdict{font-size:15px;line-height:1.7;margin:14px 0 4px}
+  .tok{color:var(--green)}
+  .tbad{color:var(--danger)}
+  .staff-grid{display:grid;grid-template-columns:1fr;gap:8px 14px;margin-top:6px}
+  @media (min-width:560px){.staff-grid{grid-template-columns:1fr 1fr}}
+  .staffbox{background:#1E2426;border-radius:12px;padding:10px;overflow-x:auto}
+  .staffbox svg{display:block;width:100%;height:auto}
+  #score{font-size:14px;font-weight:600;line-height:1.7;margin:2px 0 8px}
+  #summary .rtext{font-size:16px;font-weight:700;text-align:center;line-height:1.7;margin:6px 0 10px}
+  #summary.r1 .rtext{font-size:17px}
+  #summary.r2 .rtext{font-size:18px}
+  #summary.r3 .rtext{font-size:20px}
+  .note{background:rgba(47,191,170,0.08);border-left:3px solid var(--teal-bright);border-radius:8px;padding:10px 14px;font-size:13.5px;line-height:1.8;color:var(--paper)}
+  .note b{color:#fff;display:block;margin-bottom:4px}
+  .cele{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:60;overflow:hidden}
+  .cele-piece{position:fixed;top:-16px;animation:cele-fall linear forwards}
+  @keyframes celebr-fall{to{transform:translateY(var(--fall,700px)) rotate(720deg)}}
+  @keyframes cele-fall{to{transform:translateY(var(--fall,700px)) rotate(720deg)}}
+  .cele-banner{position:fixed;top:14vh;left:50%;transform:translateX(-50%);width:max-content;max-width:88vw;background:#fff;color:#251f21;border-radius:12px;padding:14px 18px;box-shadow:0 8px 30px rgba(0,0,0,.4);text-align:center;font-weight:700;line-height:1.5;animation:cele-pop .35s ease-out}
+  .cele-banner.t1{font-size:17px}
+  .cele-banner.t2{font-size:19px}
+  .cele-banner.t3{font-size:22px}
+  @keyframes cele-pop{from{transform:translateX(-50%) scale(.7);opacity:0}}
+  footer{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.8;}
+  footer a{color:var(--teal-bright);}
+  @media (max-width:640px){.wrap{padding:14px 10px 32px}.card{padding:14px 14px;margin-bottom:12px}h1{font-size:21px}.sub{font-size:13px}}
+</style></head><body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">TCMC · 調式 Modes</div>
+    <h1>調式綜合測驗 · 旋律換音,換調式<span class="en">Mode Change Quiz</span></h1>
+    <div class="fact">10 題 · 不限時 · 每題都有回饋</div>
+    <div class="sub">測驗目的:在同一個主音上聽出調式色彩的改變,訓練相對聽力;聽的是調式,不是調性。本測驗採同主音設計:前段建立主音後,後段請用同一個主音判斷調式;同一組音改用其他主音解釋不算。例如:Ionian 的 fa 升高半音就是 Lydian,不能把它算成 G 調性的 Ionian。<br>每題同一旋律骨架分前段、後段各播一遍,後段照調式換幾個音、也可能不變;分別選出前段與後段的調式(可以相同),兩個都選對才算這題答對。初級在播放前給主音和弦提示,高級不給;不限時,每題都可以不限次重聽。</div>
+  </header>
+  <div class="card" id="hint">⚠ 如果按鈕沒反應:請用網址在 Safari / LINE 瀏覽器開啟,不要用檔案預覽。若沒聲音,請關閉手機靜音鍵、調大音量。</div>
+  <div class="card">
+    <h2>範例 Example</h2>
+    <div class="staff-grid">
+      <div><div class="cap">前段 · 大調 Ionian</div><div class="staffbox" id="exA"></div></div>
+      <div><div class="cap">後段 · Lydian 利底安</div><div class="staffbox" id="exB"></div></div>
+    </div>
+    <div class="cap">示意:同一旋律骨架,fa 升高半音,Ionian 變 Lydian(金色為改變的音)</div>
+  </div>
+  <div class="card">
+    <h2>設定與成績</h2>
+    <div class="cap grp" style="margin-top:0">級別</div>
+    <div class="choices">
+      <button type="button" class="btn ch sel" id="lvJ">初級:有和弦提示</button>
+      <button type="button" class="btn ch" id="lvS">高級:無和弦提示</button>
+    </div>
+    <div class="cap grp">成績</div>
+    <div id="score">已核對 0 / 10 題,答對 0 題。</div>
+    <div class="controls"><button type="button" class="btn secb" id="reset">全部重來</button></div>
+  </div>
+  <div id="qs"></div>
+  <div class="card" id="summary" hidden>
+    <h2>總講評</h2>
+    <div class="rtext" id="summaryText"></div>
+    <div class="controls"><button type="button" class="btn secb" id="reset2">全部重來</button></div>
+  </div>
+  <div class="card">
+    <h2>說明</h2>
+    <div class="note"><b>測驗範圍</b>10 題固定順序;之後的版本會改為隨機抽題、同一配對換不同旋律。本單元定位在整套教材最後,作調式綜合測驗。每題答對有小獎勵,答錯有鼓勵與聽辨提示;10 題核對後給總講評。音色為合成音;譜例的唱名依同主音 do 與母大調首調雙列對照,金色是改變的音。重新整理頁面會清掉作答紀錄。</div>
+  </div>
+  <footer>
+    <span>調式綜合測驗 · 旋律換音,換調式 Mode Change Quiz</span><br>
+    <span>台灣合唱音樂中心 TCMC 製作 · © 2026 朱元雷 Ray Chu · <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hant" style="color:inherit">CC BY-NC 4.0</a></span><br>
+    <span>教學使用不限收費,詳見 <a href="https://tcmctw.github.io">tcmctw.github.io</a></span>
+  </footer>
+</div>
+<script>
+const FREQ = {
+  C3: 130.813,
+  C4: 261.626,
+  Db4: 277.183,
+  D4: 293.665,
+  Eb4: 311.127,
+  E4: 329.628,
+  F4: 349.228,
+  Fs4: 369.994,
+  G4: 391.996,
+  Gb4: 369.994,
+  Ab4: 415.305,
+  A4: 440,
+  Bb4: 466.164,
+  B4: 493.883,
+  C5: 523.251
+};
+const POS = {
+  C4: -2,
+  Db4: -1,
+  D4: -1,
+  Eb4: 0,
+  E4: 0,
+  F4: 1,
+  Fs4: 1,
+  G4: 2,
+  Gb4: 2,
+  Ab4: 3,
+  A4: 3,
+  Bb4: 4,
+  B4: 4,
+  C5: 5
+};
+const MODES = [
+  { value: "ionian", label: "\u5927\u8ABF Ionian" },
+  { value: "lydian", label: "Lydian \u5229\u5E95\u5B89" },
+  { value: "mixo", label: "Mixolydian \u7C73\u7D22\u5229\u5E95\u5B89" },
+  { value: "dorian", label: "Dorian \u591A\u91CC\u5B89" },
+  { value: "aeolian", label: "\u81EA\u7136\u5C0F\u8ABF Aeolian" },
+  { value: "harmonic", label: "\u548C\u8072\u5C0F\u8ABF Harmonic minor" },
+  { value: "melodic", label: "\u65CB\u5F8B\u5C0F\u8ABF Melodic minor" },
+  { value: "phrygian", label: "Phrygian \u5F17\u91CC\u5409\u5B89" },
+  { value: "locrian", label: "Locrian \u6D1B\u514B\u91CC\u5B89" }
+];
+const MODE_NAME = Object.fromEntries(MODES.map((m) => [m.value, m.label]));
+const acceptNames = (list) => list.map((m) => "C " + MODE_NAME[m]).join(" \u6216 ");
+const mel = (pairs) => pairs.map(([n, d]) => ({ n, d }));
+const Q = [
+  {
+    id: 1,
+    chordA: "maj",
+    chordB: "maj",
+    correctA: "ionian",
+    correctB: "mixo",
+    acceptA: ["ionian"],
+    acceptB: ["mixo"],
+    melA: mel([["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["A4", 0.5], ["B4", 0.5], ["C5", 1], ["B4", 0.5], ["A4", 0.5], ["G4", 0.5], ["F4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["A4", 0.5], ["Bb4", 0.5], ["C5", 1], ["Bb4", 0.5], ["A4", 0.5], ["G4", 0.5], ["F4", 0.5], ["C4", 1]]),
+    answer: "C \u5927\u8ABF \u2192 C Mixolydian \u7C73\u7D22\u5229\u5E95\u5B89:\u7B2C\u4E03\u7D1A ti \u2192 te(\u964D\u534A\u97F3),\u5728\u7B2C 5\u30017 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "E4" }, { p: "G4" }, { p: "A4" }, { p: "B4" }, { p: "C5", long: true }, { p: "B4" }, { p: "A4" }, { p: "G4" }, { p: "F4" }, { p: "C4", long: true }],
+      rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "mi", "sol", "la", "ti", "do'", "ti", "la", "sol", "fa", "do"], hot: [4, 6] }]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "E4" }, { p: "G4" }, { p: "A4" }, { p: "Bb4", acc: "b" }, { p: "C5", long: true }, { p: "Bb4", acc: "b" }, { p: "A4" }, { p: "G4" }, { p: "F4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "mi", "sol", "la", "te", "do'", "te", "la", "sol", "fa", "do"], hot: [4, 6] },
+        { tag: "\u9996\u8ABF sol \u8D77", labels: ["sol", "ti", "re", "mi", "fa", "sol'", "fa", "mi", "re", "do", "sol"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 2,
+    chordA: "maj",
+    chordB: "maj",
+    correctA: "ionian",
+    correctB: "lydian",
+    acceptA: ["ionian"],
+    acceptB: ["lydian"],
+    melA: mel([["C4", 0.5], ["G4", 0.5], ["F4", 0.5], ["E4", 0.5], ["F4", 1], ["G4", 0.5], ["B4", 0.5], ["G4", 0.5], ["E4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["G4", 0.5], ["Fs4", 0.5], ["E4", 0.5], ["Fs4", 1], ["G4", 0.5], ["B4", 0.5], ["G4", 0.5], ["E4", 0.5], ["C4", 1]]),
+    answer: "C \u5927\u8ABF \u2192 C Lydian \u5229\u5E95\u5B89:\u7B2C\u56DB\u7D1A fa \u2192 fi(\u5347\u534A\u97F3),\u5728\u7B2C 3\u30015 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "G4" }, { p: "F4" }, { p: "E4" }, { p: "F4", long: true }, { p: "G4" }, { p: "B4" }, { p: "G4" }, { p: "E4" }, { p: "C4", long: true }],
+      rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "sol", "fa", "mi", "fa", "sol", "ti", "sol", "mi", "do"], hot: [2, 4] }]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "G4" }, { p: "Fs4", acc: "#" }, { p: "E4" }, { p: "Fs4", acc: "#", long: true }, { p: "G4" }, { p: "B4" }, { p: "G4" }, { p: "E4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "sol", "fi", "mi", "fi", "sol", "ti", "sol", "mi", "do"], hot: [2, 4] },
+        { tag: "\u9996\u8ABF fa \u8D77", labels: ["fa", "do", "ti", "la", "ti", "do", "mi", "do", "la", "fa"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 3,
+    chordA: "min",
+    chordB: "min",
+    correctA: "aeolian",
+    correctB: "dorian",
+    acceptA: ["aeolian"],
+    acceptB: ["dorian"],
+    melA: mel([["C4", 0.5], ["D4", 0.5], ["Ab4", 0.5], ["G4", 0.5], ["Ab4", 1], ["Bb4", 0.5], ["C5", 0.5], ["G4", 0.5], ["Eb4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["D4", 0.5], ["A4", 0.5], ["G4", 0.5], ["A4", 1], ["Bb4", 0.5], ["C5", 0.5], ["G4", 0.5], ["Eb4", 0.5], ["C4", 1]]),
+    answer: "C \u81EA\u7136\u5C0F\u8ABF \u2192 C Dorian \u591A\u91CC\u5B89:\u7B2C\u516D\u7D1A le \u2192 la(\u5347\u534A\u97F3),\u5728\u7B2C 3\u30015 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "D4" }, { p: "Ab4", acc: "b" }, { p: "G4" }, { p: "Ab4", acc: "b", long: true }, { p: "Bb4", acc: "b" }, { p: "C5" }, { p: "G4" }, { p: "Eb4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "re", "le", "sol", "le", "te", "do'", "sol", "me", "do"], hot: [2, 4] },
+        { tag: "\u9996\u8ABF la \u8D77", labels: ["la", "ti", "fa", "mi", "fa", "sol", "la'", "mi", "do", "la"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "D4" }, { p: "A4" }, { p: "G4" }, { p: "A4", long: true }, { p: "Bb4", acc: "b" }, { p: "C5" }, { p: "G4" }, { p: "Eb4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "re", "la", "sol", "la", "te", "do'", "sol", "me", "do"], hot: [2, 4] },
+        { tag: "\u9996\u8ABF re \u8D77", labels: ["re", "mi", "ti", "la", "ti", "do", "re'", "la", "fa", "re"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 4,
+    chordA: "maj",
+    chordB: "min",
+    correctA: "ionian",
+    correctB: "aeolian",
+    acceptA: ["ionian"],
+    acceptB: ["aeolian"],
+    melA: mel([["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["B4", 0.5], ["A4", 0.5], ["F4", 0.5], ["D4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["Eb4", 0.5], ["G4", 0.5], ["Bb4", 0.5], ["Ab4", 0.5], ["F4", 0.5], ["D4", 0.5], ["C4", 1]]),
+    answer: "C \u5927\u8ABF \u2192 C \u81EA\u7136\u5C0F\u8ABF:mi \u2192 me\u3001ti \u2192 te\u3001la \u2192 le,\u4E09\u500B\u97F3\u90FD\u964D\u534A\u97F3(\u7B2C 2\u30014\u30015 \u97F3)\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "E4" }, { p: "G4" }, { p: "B4" }, { p: "A4" }, { p: "F4" }, { p: "D4" }, { p: "C4", long: true }],
+      rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "mi", "sol", "ti", "la", "fa", "re", "do"], hot: [1, 3, 4] }]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "Eb4", acc: "b" }, { p: "G4" }, { p: "Bb4", acc: "b" }, { p: "Ab4", acc: "b" }, { p: "F4" }, { p: "D4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "me", "sol", "te", "le", "fa", "re", "do"], hot: [1, 3, 4] },
+        { tag: "\u9996\u8ABF la \u8D77", labels: ["la", "do", "mi", "sol", "fa", "re", "ti", "la"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 5,
+    chordA: "min",
+    chordB: "min",
+    correctA: "dorian",
+    correctB: "dorian",
+    acceptA: ["dorian"],
+    acceptB: ["dorian"],
+    melA: mel([["C4", 0.5], ["D4", 0.5], ["Eb4", 0.5], ["G4", 0.5], ["A4", 0.5], ["C5", 1], ["Bb4", 0.5], ["G4", 0.5], ["Eb4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["D4", 0.5], ["Eb4", 0.5], ["G4", 0.5], ["A4", 0.5], ["C5", 1], ["Bb4", 0.5], ["G4", 0.5], ["Eb4", 0.5], ["C4", 1]]),
+    answer: "\u6C92\u6709\u8B8A:\u524D\u5F8C\u5169\u6BB5\u5B8C\u5168\u76F8\u540C,\u90FD\u662F C Dorian \u591A\u91CC\u5B89\u3002\u300C\u6C92\u6709\u8B8A\u300D\u7684\u9078\u6CD5\u662F\u524D\u6BB5\u8207\u5F8C\u6BB5\u9078\u540C\u4E00\u500B\u8ABF\u5F0F\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "D4" }, { p: "Eb4", acc: "b" }, { p: "G4" }, { p: "A4" }, { p: "C5", long: true }, { p: "Bb4", acc: "b" }, { p: "G4" }, { p: "Eb4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "re", "me", "sol", "la", "do'", "te", "sol", "me", "do"], hot: [] },
+        { tag: "\u9996\u8ABF re \u8D77", labels: ["re", "mi", "fa", "la", "ti", "re'", "do", "la", "fa", "re"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "D4" }, { p: "Eb4", acc: "b" }, { p: "G4" }, { p: "A4" }, { p: "C5", long: true }, { p: "Bb4", acc: "b" }, { p: "G4" }, { p: "Eb4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "re", "me", "sol", "la", "do'", "te", "sol", "me", "do"], hot: [] },
+        { tag: "\u9996\u8ABF re \u8D77", labels: ["re", "mi", "fa", "la", "ti", "re'", "do", "la", "fa", "re"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 6,
+    chordA: "maj",
+    chordB: "maj",
+    correctA: "mixo",
+    correctB: "ionian",
+    acceptA: ["mixo"],
+    acceptB: ["ionian"],
+    melA: mel([["C4", 0.5], ["G4", 0.5], ["E4", 0.5], ["F4", 0.5], ["D4", 0.5], ["Bb4", 1], ["C5", 0.5], ["Bb4", 0.5], ["G4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["G4", 0.5], ["E4", 0.5], ["F4", 0.5], ["D4", 0.5], ["B4", 1], ["C5", 0.5], ["B4", 0.5], ["G4", 0.5], ["C4", 1]]),
+    answer: "C Mixolydian \u7C73\u7D22\u5229\u5E95\u5B89 \u2192 C \u5927\u8ABF:\u7B2C\u4E03\u7D1A te \u2192 ti(\u5347\u534A\u97F3),\u5728\u7B2C 6\u30018 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "G4" }, { p: "E4" }, { p: "F4" }, { p: "D4" }, { p: "Bb4", acc: "b", long: true }, { p: "C5" }, { p: "Bb4", acc: "b" }, { p: "G4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "sol", "mi", "fa", "re", "te", "do'", "te", "sol", "do"], hot: [5, 7] },
+        { tag: "\u9996\u8ABF sol \u8D77", labels: ["sol", "re", "ti", "do", "la", "fa", "sol'", "fa", "re", "sol"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "G4" }, { p: "E4" }, { p: "F4" }, { p: "D4" }, { p: "B4", long: true }, { p: "C5" }, { p: "B4" }, { p: "G4" }, { p: "C4", long: true }],
+      rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "sol", "mi", "fa", "re", "ti", "do'", "ti", "sol", "do"], hot: [5, 7] }]
+    }
+  },
+  {
+    id: 7,
+    chordA: "maj",
+    chordB: "maj",
+    correctA: "lydian",
+    correctB: "ionian",
+    acceptA: ["lydian"],
+    acceptB: ["ionian"],
+    melA: mel([["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["B4", 0.5], ["A4", 0.5], ["G4", 0.5], ["Fs4", 0.5], ["E4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["B4", 0.5], ["A4", 0.5], ["G4", 0.5], ["F4", 0.5], ["E4", 0.5], ["C4", 1]]),
+    answer: "C Lydian \u5229\u5E95\u5B89 \u2192 C \u5927\u8ABF:\u7B2C\u56DB\u7D1A fi \u2192 fa(\u964D\u534A\u97F3),\u5728\u7B2C 7 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "E4" }, { p: "G4" }, { p: "B4" }, { p: "A4" }, { p: "G4" }, { p: "Fs4", acc: "#" }, { p: "E4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "mi", "sol", "ti", "la", "sol", "fi", "mi", "do"], hot: [6] },
+        { tag: "\u9996\u8ABF fa \u8D77", labels: ["fa", "la", "do", "mi", "re", "do", "ti", "la", "fa"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "E4" }, { p: "G4" }, { p: "B4" }, { p: "A4" }, { p: "G4" }, { p: "F4" }, { p: "E4" }, { p: "C4", long: true }],
+      rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "mi", "sol", "ti", "la", "sol", "fa", "mi", "do"], hot: [6] }]
+    }
+  },
+  {
+    id: 8,
+    chordA: "min",
+    chordB: "maj",
+    correctA: "dorian",
+    correctB: "mixo",
+    acceptA: ["dorian"],
+    acceptB: ["mixo"],
+    melA: mel([["C4", 0.5], ["F4", 0.5], ["G4", 0.5], ["Eb4", 0.5], ["A4", 0.5], ["Bb4", 0.5], ["F4", 0.5], ["Eb4", 0.5], ["D4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["F4", 0.5], ["G4", 0.5], ["E4", 0.5], ["A4", 0.5], ["Bb4", 0.5], ["F4", 0.5], ["E4", 0.5], ["D4", 0.5], ["C4", 1]]),
+    answer: "C Dorian \u591A\u91CC\u5B89 \u2192 C Mixolydian \u7C73\u7D22\u5229\u5E95\u5B89:\u7B2C\u4E09\u7D1A me \u2192 mi(\u5347\u534A\u97F3),\u5728\u7B2C 4\u30018 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "F4" }, { p: "G4" }, { p: "Eb4", acc: "b" }, { p: "A4" }, { p: "Bb4", acc: "b" }, { p: "F4" }, { p: "Eb4", acc: "b" }, { p: "D4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "fa", "sol", "me", "la", "te", "fa", "me", "re", "do"], hot: [3, 7] },
+        { tag: "\u9996\u8ABF re \u8D77", labels: ["re", "sol", "la", "fa", "ti", "do", "sol", "fa", "mi", "re"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "F4" }, { p: "G4" }, { p: "E4" }, { p: "A4" }, { p: "Bb4", acc: "b" }, { p: "F4" }, { p: "E4" }, { p: "D4" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "fa", "sol", "mi", "la", "te", "fa", "mi", "re", "do"], hot: [3, 7] },
+        { tag: "\u9996\u8ABF sol \u8D77", labels: ["sol", "do", "re", "ti", "mi", "fa", "do", "ti", "la", "sol"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 9,
+    chordA: "min",
+    chordB: "min",
+    correctA: "aeolian",
+    correctB: "phrygian",
+    acceptA: ["aeolian"],
+    acceptB: ["phrygian"],
+    melA: mel([["C4", 0.5], ["G4", 0.5], ["F4", 0.5], ["D4", 0.5], ["Eb4", 0.5], ["Ab4", 0.5], ["Bb4", 0.5], ["F4", 0.5], ["D4", 0.5], ["Eb4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["G4", 0.5], ["F4", 0.5], ["Db4", 0.5], ["Eb4", 0.5], ["Ab4", 0.5], ["Bb4", 0.5], ["F4", 0.5], ["Db4", 0.5], ["Eb4", 0.5], ["C4", 1]]),
+    answer: "C \u81EA\u7136\u5C0F\u8ABF \u2192 C Phrygian \u5F17\u91CC\u5409\u5B89:\u7B2C\u4E8C\u7D1A re \u2192 ra(\u964D\u534A\u97F3),\u5728\u7B2C 4\u30019 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "G4" }, { p: "F4" }, { p: "D4" }, { p: "Eb4", acc: "b" }, { p: "Ab4", acc: "b" }, { p: "Bb4", acc: "b" }, { p: "F4" }, { p: "D4" }, { p: "Eb4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "sol", "fa", "re", "me", "le", "te", "fa", "re", "me", "do"], hot: [3, 8] },
+        { tag: "\u9996\u8ABF la \u8D77", labels: ["la", "mi", "re", "ti", "do", "fa", "sol", "re", "ti", "do", "la"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "G4" }, { p: "F4" }, { p: "Db4", acc: "b" }, { p: "Eb4", acc: "b" }, { p: "Ab4", acc: "b" }, { p: "Bb4", acc: "b" }, { p: "F4" }, { p: "Db4", acc: "b" }, { p: "Eb4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "sol", "fa", "ra", "me", "le", "te", "fa", "ra", "me", "do"], hot: [3, 8] },
+        { tag: "\u9996\u8ABF mi \u8D77", labels: ["mi", "ti", "la", "fa", "sol", "do", "re", "la", "fa", "sol", "mi"], hot: [] }
+      ]
+    }
+  },
+  {
+    id: 10,
+    chordA: "min",
+    chordB: "dim",
+    correctA: "phrygian",
+    correctB: "locrian",
+    acceptA: ["phrygian"],
+    acceptB: ["locrian"],
+    melA: mel([["C4", 0.5], ["Eb4", 0.5], ["G4", 0.5], ["C5", 0.5], ["Bb4", 0.5], ["G4", 0.5], ["Ab4", 0.5], ["F4", 0.5], ["Eb4", 0.5], ["Db4", 0.5], ["C4", 1]]),
+    melB: mel([["C4", 0.5], ["Eb4", 0.5], ["Gb4", 0.5], ["C5", 0.5], ["Bb4", 0.5], ["Gb4", 0.5], ["Ab4", 0.5], ["F4", 0.5], ["Eb4", 0.5], ["Db4", 0.5], ["C4", 1]]),
+    answer: "C Phrygian \u5F17\u91CC\u5409\u5B89 \u2192 C Locrian \u6D1B\u514B\u91CC\u5B89:\u7B2C\u4E94\u7D1A sol \u2192 se(\u964D\u534A\u97F3),\u5728\u7B2C 3\u30016 \u97F3\u3002",
+    staffA: {
+      notes: [{ p: "C4" }, { p: "Eb4", acc: "b" }, { p: "G4" }, { p: "C5" }, { p: "Bb4", acc: "b" }, { p: "G4" }, { p: "Ab4", acc: "b" }, { p: "F4" }, { p: "Eb4", acc: "b" }, { p: "Db4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "me", "sol", "do'", "te", "sol", "le", "fa", "me", "ra", "do"], hot: [2, 5] },
+        { tag: "\u9996\u8ABF mi \u8D77", labels: ["mi", "sol", "ti", "mi'", "re", "ti", "do", "la", "sol", "fa", "mi"], hot: [] }
+      ]
+    },
+    staffB: {
+      notes: [{ p: "C4" }, { p: "Eb4", acc: "b" }, { p: "Gb4", acc: "b" }, { p: "C5" }, { p: "Bb4", acc: "b" }, { p: "Gb4", acc: "b" }, { p: "Ab4", acc: "b" }, { p: "F4" }, { p: "Eb4", acc: "b" }, { p: "Db4", acc: "b" }, { p: "C4", long: true }],
+      rows: [
+        { tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "me", "se", "do'", "te", "se", "le", "fa", "me", "ra", "do"], hot: [2, 5] },
+        { tag: "\u9996\u8ABF ti \u8D77", labels: ["ti", "re", "fa", "ti'", "la", "fa", "sol", "mi", "re", "do", "ti"], hot: [] }
+      ]
+    }
+  }
+];
+let ac = null;
+function audioCtx() {
+  if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (ac.state === "suspended") void ac.resume();
+  return ac;
+}
+function tone(freq, t, dur, amp) {
+  const c = audioCtx();
+  const g = c.createGain();
+  g.gain.setValueAtTime(1e-4, t);
+  g.gain.exponentialRampToValueAtTime(amp, t + 0.015);
+  g.gain.setTargetAtTime(amp * 0.75, t + 0.015, Math.max(dur / 3, 0.03));
+  g.gain.setTargetAtTime(1e-4, t + Math.max(dur - 0.06, 0.02), 0.018);
+  g.connect(c.destination);
+  [[1, 1], [2, 0.4], [3, 0.15], [4, 0.08]].forEach(([m, a]) => {
+    const o = c.createOscillator();
+    o.type = "sine";
+    o.frequency.value = freq * m;
+    const og = c.createGain();
+    og.gain.value = a / 1.63;
+    o.connect(og);
+    og.connect(g);
+    o.start(t);
+    o.stop(t + dur + 0.15);
+  });
+}
+function chordNotes(kind) {
+  return kind === "maj" ? ["C3", "C4", "E4", "G4"] : kind === "min" ? ["C3", "C4", "Eb4", "G4"] : ["C3", "C4", "Eb4", "Gb4"];
+}
+function schedule(q, which, withChord) {
+  const c = audioCtx();
+  const t0 = c.currentTime + 0.08;
+  const events = [];
+  const addChord = (kind, t, dur) => {
+    const amps = [0.3, 0.3, 0.25, 0.25];
+    chordNotes(kind).forEach((n, i) => events.push({ f: FREQ[n], t, d: dur, a: amps[i] }));
+  };
+  const addMel = (m, t) => {
+    let cur = t;
+    m.forEach((ev) => {
+      events.push({ f: FREQ[ev.n], t: cur, d: ev.d, a: 0.55 });
+      cur += ev.d;
+    });
+    return cur;
+  };
+  if (which === "full") {
+    if (withChord) {
+      addChord(q.chordA, t0, 2);
+      const endA = addMel(q.melA, t0 + 2.8);
+      addChord(q.chordB, endA + 1, 1.2);
+      addMel(q.melB, endA + 2.8);
+    } else {
+      const endA = addMel(q.melA, t0);
+      addMel(q.melB, endA + 1.5);
+    }
+  } else {
+    const m = which === "A" ? q.melA : q.melB;
+    const kind = which === "A" ? q.chordA : q.chordB;
+    if (withChord) {
+      addChord(kind, t0, 2);
+      addMel(m, t0 + 2.8);
+    } else addMel(m, t0);
+  }
+  events.forEach((e) => tone(e.f, e.t, e.d, e.a));
+  const last = events.reduce((mx, e) => Math.max(mx, e.t + e.d), t0);
+  return last - t0 + 0.35;
+}
+function fanfare(tier) {
+  const c = audioCtx();
+  const t0 = c.currentTime + 0.05;
+  const seq = tier === 1 ? [["C4", 0, 0.18], ["E4", 0.13, 0.18], ["G4", 0.26, 0.18], ["C5", 0.39, 0.8]] : tier === 2 ? [["C4", 0, 0.16], ["E4", 0.12, 0.16], ["G4", 0.24, 0.16], ["C5", 0.36, 0.16], ["G4", 0.48, 0.16], ["C5", 0.6, 1]] : [
+    ["C4", 0, 0.15],
+    ["E4", 0.11, 0.15],
+    ["G4", 0.22, 0.15],
+    ["C5", 0.33, 0.15],
+    ["E4", 0.44, 0.15],
+    ["G4", 0.55, 0.15],
+    ["C5", 0.66, 0.5],
+    ["C4", 0.9, 1.2],
+    ["E4", 0.9, 1.2],
+    ["G4", 0.9, 1.2],
+    ["C5", 0.9, 1.2]
+  ];
+  seq.forEach(([n, dt, d]) => tone(FREQ[n], t0 + dt, d, 0.5));
+}
+const EX_A = {
+  notes: [{ p: "C4" }, { p: "D4" }, { p: "E4" }, { p: "F4", long: true }, { p: "G4" }],
+  rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "re", "mi", "fa", "sol"], hot: [3] }]
+};
+const EX_B = {
+  notes: [{ p: "C4" }, { p: "D4" }, { p: "E4" }, { p: "Fs4", acc: "#", long: true }, { p: "G4" }],
+  rows: [{ tag: "\u540C\u4E3B\u97F3 do", labels: ["do", "re", "mi", "fi", "sol"], hot: [3] }]
+};
+const CLEF = "M376 415C374 427 376 428 382 434C398 449 419 470 438 491C522 583 572 702 572 815C572 902 548 988 507 1048C492 1070 466 1098 455 1098C441 1098 410 1072 390 1050C316 968 292 843 292 739C292 681 299 616 306 575C308 563 309 561 297 551C233 498 164 437 112 373C43 287 0 194 0 87C0 -87 119 -252 364 -252C387 -252 413 -250 433 -246C444 -244 446 -243 448 -255C460 -322 475 -409 475 -456C475 -604 375 -622 316 -622C262 -622 236 -606 236 -593C236 -586 245 -583 268 -576C299 -567 335 -540 335 -482C335 -427 300 -380 239 -380C172 -380 132 -433 132 -495C132 -560 171 -658 322 -658C389 -658 519 -628 519 -458C519 -401 501 -306 490 -244C488 -232 489 -233 503 -227C604 -187 671 -102 671 11C671 139 577 252 430 252C404 252 404 252 401 270ZM470 943C503 943 530 916 530 861C530 792 497 728 419 650C403 634 379 611 356 591C349 585 345 586 343 599C339 625 337 659 337 691C337 847 409 943 470 943ZM361 262C364 243 364 244 346 238C258 208 201 129 201 44C201 -46 248 -110 316 -133C324 -136 336 -139 343 -139C351 -139 355 -134 355 -128C355 -121 347 -118 340 -115C298 -97 268 -54 268 -8C268 49 307 92 368 109C384 113 386 112 388 101L438 -197C440 -208 439 -208 424 -211C408 -214 388 -216 368 -216C193 -216 80 -119 80 20C80 79 90 158 173 252C233 319 279 356 326 394C336 402 338 401 340 390ZM430 103C428 115 429 118 441 117C522 110 589 42 589 -46C589 -109 551 -160 495 -188C483 -194 481 -194 479 -182Z";
+const GOLD = "#E8A33D", INK2 = "#EDEDE8", DIM2 = "#9AA3A0", STAFFC = "#7E8A86", DBG = "#1E2426";
+const X0 = 96, DX = 27;
+
+// ---------- staff (SVG string) ----------
+function staffSVG(spec) {
+    const hot = new Set(spec.rows.flatMap(r => r.hot));
+    const height = spec.rows.length > 1 ? 148 : 130;
+    const w = X0 + (spec.notes.length - 1) * DX + 34;
+    let s = `<svg viewBox="0 0 ${w} ${height}" style="max-width:${w}px" role="img" aria-label="notation">`;
+    [46, 56, 66, 76, 86].forEach(y => { s += `<line x1="4" y1="${y}" x2="${w - 4}" y2="${y}" stroke="${STAFFC}" stroke-width="1"/>`; });
+    s += `<g transform="translate(6,86) scale(0.04,-0.04)"><path d="${CLEF}" fill="${INK2}"/></g>`;
+    spec.notes.forEach((nt, i) => {
+        const x = X0 + i * DX, y = 86 - POS[nt.p] * 5;
+        const col = hot.has(i) ? GOLD : INK2;
+        if (nt.acc === 'b') s += `<text x="${x - 16}" y="${y + 6}" font-size="19" fill="${col}" font-family="serif">&#9837;</text>`;
+        if (nt.acc === '#') s += `<text x="${x - 15}" y="${y + 6}" font-size="17" fill="${col}" font-family="serif">&#9839;</text>`;
+        s += `<g transform="translate(${x},${y}) rotate(-16)"><ellipse rx="5.4" ry="3.9" fill="${col}"/>`;
+        if (nt.long) s += `<ellipse rx="3.3" ry="1.9" fill="${DBG}"/>`;
+        s += '</g>';
+        s += y <= 66
+            ? `<line x1="${x - 5}" y1="${y + 2}" x2="${x - 5}" y2="${y + 36}" stroke="${col}" stroke-width="1.4"/>`
+            : `<line x1="${x + 5}" y1="${y - 2}" x2="${x + 5}" y2="${y - 36}" stroke="${col}" stroke-width="1.4"/>`;
+        if (nt.p === 'C4') s += `<line x1="${x - 11}" y1="${y}" x2="${x + 11}" y2="${y}" stroke="${STAFFC}" stroke-width="1.2"/>`;
+    });
+    spec.rows.forEach((row, r) => {
+        const ly = 118 + r * 18;
+        s += `<text x="34" y="${ly}" font-size="10" fill="${DIM2}">${row.tag}</text>`;
+        row.labels.forEach((lab, i) => {
+            const x = X0 + i * DX;
+            const isHot = row.hot.includes(i);
+            s += `<text x="${x}" y="${ly}" text-anchor="middle" font-size="11.5" font-weight="${isHot ? 700 : 400}" fill="${isHot ? GOLD : DIM2}">${lab}</text>`;
+        });
+    });
+    return s + '</svg>';
+}
+
+// ---------- celebration ----------
+function celebrate(tier) {
+    const count = tier === 3 ? 100 : tier === 2 ? 60 : 36;
+    const colors = ['#73A89A', '#C96F5E', '#7E9CC9', '#B58AC9', '#5E8C6A', '#D97B9C'];
+    const fallBase = Math.min(window.innerHeight * 0.85, 820);
+    const msg = tier === 3
+        ? '🏆 滿分!10 / 10 題全對 🎉 調式聽辨完全通關!'
+        : tier === 2
+            ? '🎉 答對 9 / 10 題,表現很好!只差一題滿分!'
+            : '🎉 答對 8 / 10 題,表現很好!';
+    const el = document.createElement('div');
+    el.className = 'cele';
+    el.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < count; i++) {
+        const r = (k) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
+        const p = document.createElement('span');
+        p.className = 'cele-piece';
+        const size = 6 + r(4) * 7, round = r(6) > 0.5;
+        p.style.left = (r(1) * 100) + '%';
+        p.style.width = size + 'px';
+        p.style.height = (round ? size : size * 0.55) + 'px';
+        p.style.background = colors[Math.floor(r(5) * colors.length)];
+        p.style.borderRadius = round ? '50%' : '2px';
+        p.style.animationDelay = (r(2) * 0.9) + 's';
+        p.style.animationDuration = (2.2 + r(3) * 1.6) + 's';
+        p.style.setProperty('--fall', (fallBase * (0.65 + r(7) * 0.45)) + 'px');
+        el.appendChild(p);
+    }
+    const b = document.createElement('div');
+    b.className = 'cele-banner t' + tier;
+    b.textContent = msg;
+    el.appendChild(b);
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5200);
+}
+
+// ---------- per-question feedback ----------
+const PRAISES = ['答對了!', '聽得真準!', '完全正確!', '好耳朵!', '漂亮,就是這個色彩!'];
+const ENCOURAGE_FULL = ['沒關係,', '這題不容易,'];
+const MODE_HINT = {
+    ionian: '沒有升四也沒有降七,是大調',
+    lydian: '聽 fa 有沒有升高半音(fa→fi)',
+    mixo: '聽 ti 有沒有降低半音(ti→te)',
+    dorian: '小調系列,聽 fa 有沒有升高半音(fa→fi)',
+    aeolian: '小調系列,沒有升四也沒有降七,是自然小調',
+    harmonic: '聽 sol 有沒有升高半音(sol→si)',
+    melodic: '聽 fa 和 sol 有沒有都升高(fa→fi、sol→si)',
+    phrygian: '小調系列,聽 ti 有沒有降低半音(ti→te)',
+    locrian: '聽 ti 和 mi 有沒有都降低(ti→te、mi→me)'
+};
+let praiseIdx = 0, encourageIdx = 0;
+
+function miniCelebrate() {
+    const colors = ['#73A89A', '#C96F5E', '#7E9CC9', '#B58AC9', '#5E8C6A', '#D97B9C'];
+    const fallBase = Math.min(window.innerHeight * 0.5, 480);
+    const el = document.createElement('div');
+    el.className = 'cele';
+    el.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 22; i++) {
+        const r = (k) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
+        const p = document.createElement('span');
+        p.className = 'cele-piece';
+        const size = 5 + r(4) * 6, round = r(6) > 0.5;
+        p.style.left = (r(1) * 100) + '%';
+        p.style.width = size + 'px';
+        p.style.height = (round ? size : size * 0.55) + 'px';
+        p.style.background = colors[Math.floor(r(5) * colors.length)];
+        p.style.borderRadius = round ? '50%' : '2px';
+        p.style.animationDelay = (r(2) * 0.4) + 's';
+        p.style.animationDuration = (1.4 + r(3) * 0.9) + 's';
+        p.style.setProperty('--fall', (fallBase * (0.6 + r(7) * 0.5)) + 'px');
+        el.appendChild(p);
+    }
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2400);
+}
+
+// ---------- app ----------
+const $ = id => document.getElementById(id);
+let level = 'junior';
+const results = {};
+const qState = {}; // id -> {selA, selB, result, playing, timer}
+
+function choicesHTML(qid, which) {
+    return MODES.map(m =>
+        `<button type="button" class="btn ch" data-q="${qid}" data-w="${which}" data-v="${m.value}">${m.label}</button>`
+    ).join('');
+}
+
+function questionHTML(q) {
+    return `<div class="card" id="q${q.id}">
+  <h2>第 ${q.id} 題</h2>
+  <div class="controls">
+    <button type="button" class="btn pri" data-play="full">▶ 播放完整題目</button>
+    <button type="button" class="btn secb" data-play="A">▶ 播放前段</button>
+    <button type="button" class="btn secb" data-play="B">▶ 播放後段</button>
+  </div>
+  <div class="cap">三個按鈕都可不限次重複播放,聽到確定再作答。</div>
+  <div class="cap grp">前段的調式</div>
+  <div class="choices" id="ca${q.id}">${choicesHTML(q.id, 'A')}</div>
+  <div class="cap grp">後段的調式(可相同)</div>
+  <div class="choices" id="cb${q.id}">${choicesHTML(q.id, 'B')}</div>
+  <div class="controls"><button type="button" class="btn pri" id="ok${q.id}" disabled>確定</button></div>
+  <div class="answer" id="ans${q.id}" hidden></div>
+</div>`;
+}
+
+function answerHTML(q, ok, st) {
+    const multi = q.acceptA.length > 1 || q.acceptB.length > 1;
+    const headline = multi
+        ? `${acceptNames(q.acceptA)} → ${acceptNames(q.acceptB)}:${q.answer.slice(q.answer.indexOf(':') + 1)}`
+        : q.answer;
+    let verdict;
+    if (ok) { verdict = PRAISES[praiseIdx++ % PRAISES.length] + ' '; }
+    else {
+        const partA = q.acceptA.includes(st.selA), partB = q.acceptB.includes(st.selB);
+        const ans = multi ? '這題的成立答案:' : '這題的正解:';
+        if (partA && !partB) verdict = '前段聽對了!' + ans;
+        else if (partB && !partA) verdict = '後段聽對了!' + ans;
+        else verdict = ENCOURAGE_FULL[encourageIdx++ % ENCOURAGE_FULL.length] + ans;
+    }
+    let s = `<p class="verdict"><strong class="${ok ? 'tok' : 'tbad'}">${verdict}</strong><strong>${headline}</strong></p>`;
+    if (!ok) s += `<p class="cap">再聽一次:前段${MODE_HINT[q.correctA]};後段${MODE_HINT[q.correctB]}。</p>`;
+    const extra = [q.extraA, q.extraB].filter(Boolean).join(' ');
+    if (extra) s += `<p class="cap">${extra}</p>`;
+    s += `<div class="staff-grid">
+    <div><div class="cap">前段${q.extraA ? `(唱名以 C ${MODE_NAME[q.correctA]} 的解讀標示)` : ''}</div><div class="staffbox">${staffSVG(q.staffA)}</div></div>
+    <div><div class="cap">後段${q.extraB ? `(唱名以 C ${MODE_NAME[q.correctB]} 的解讀標示)` : ''}</div><div class="staffbox">${staffSVG(q.staffB)}</div></div>
+  </div>`;
+    return s;
+}
+
+function updateScore() {
+    const checked = Object.keys(results).length;
+    const correct = Object.values(results).filter(Boolean).length;
+    let txt;
+    if (checked < Q.length) txt = `已核對 ${checked} / ${Q.length} 題,答對 ${correct} 題。`;
+    else if (correct >= 10) txt = '🏆 滿分!10 / 10 題全對 🎉🎉🎉 調式聽辨完全通關!';
+    else if (correct >= 8) txt = `🎉🎉 答對 ${correct} / 10 題,表現很好,差一點點滿分!`;
+    else if (correct >= 5) txt = `答對 ${correct} / ${Q.length} 題,已經抓到一半以上的調式色彩,再聽聽看錯的幾題會更穩。`;
+    else txt = `答對 ${correct} / ${Q.length} 題,調式色彩還在建立,先看聽法提示再試一次,會進步很快。`;
+    $('score').textContent = txt;
+}
+
+function finishIfDone() {
+    const checked = Object.keys(results).length;
+    if (checked !== Q.length) return;
+    const correct = Object.values(results).filter(Boolean).length;
+    const tier = correct >= 10 ? 3 : correct === 9 ? 2 : correct === 8 ? 1 : 0;
+    const sum = $('summary');
+    let txt;
+    if (correct >= 10) txt = '🏆 滿分!答對 10 / 10 題全對!調式聽辨完全通關!';
+    else if (correct >= 8) txt = `🎉 答對 ${correct} / 10 題,表現很好,差一點點滿分!`;
+    else if (correct >= 5) txt = `答對 ${correct} / ${Q.length} 題,已經抓到一半以上的調式色彩;回頭聽聽看錯的幾題,會更穩。`;
+    else txt = `答對 ${correct} / ${Q.length} 題,調式色彩還在建立;先看上面的聽法提示,再試一次會進步很快。`;
+    $('summaryText').textContent = txt;
+    sum.className = 'card r' + tier;
+    sum.hidden = false;
+    if (tier > 0) {
+        fanfare(tier);
+        celebrate(tier);
+    }
+    setTimeout(() => sum.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
+}
+
+function play(q, which, btn) {
+    const st = qState[q.id];
+    if (st.playing) return;
+    const secs = schedule(q, which, level === 'junior');
+    st.playing = which;
+    const card = $('q' + q.id);
+    card.querySelectorAll('[data-play]').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.play === which) b.textContent = '播放中…';
+    });
+    st.timer = setTimeout(() => {
+        st.playing = null;
+        card.querySelectorAll('[data-play]').forEach(b => {
+            b.disabled = false;
+            b.textContent = b.dataset.play === 'full' ? '▶ 播放完整題目' : b.dataset.play === 'A' ? '▶ 播放前段' : '▶ 播放後段';
+        });
+    }, secs * 1000);
+}
+
+function wire() {
+    document.querySelectorAll('.btn.ch').forEach(b => {
+        b.onclick = () => {
+            const st = qState[b.dataset.q];
+            if (st.result !== null) return;
+            const key = b.dataset.w === 'A' ? 'selA' : 'selB';
+            st[key] = st[key] === b.dataset.v ? '' : b.dataset.v;
+            document.querySelectorAll(`.btn.ch[data-q="${b.dataset.q}"][data-w="${b.dataset.w}"]`).forEach(x =>
+                x.classList.toggle('sel', x.dataset.v === st[key]));
+            $('ok' + b.dataset.q).disabled = !(st.selA && st.selB);
+        };
+    });
+    document.querySelectorAll('[data-play]').forEach(b => {
+        b.onclick = () => play(Q.find(q => 'q' + q.id === b.closest('.card').id), b.dataset.play, b);
+    });
+    document.querySelectorAll('[id^="ok"]').forEach(b => {
+        b.onclick = () => {
+            const qid = +b.id.slice(2);
+            const q = Q.find(x => x.id === qid);
+            const st = qState[qid];
+            if (!st.selA || !st.selB || st.result !== null) return;
+            const ok = q.acceptA.includes(st.selA) && q.acceptB.includes(st.selB);
+            st.result = ok;
+            results[qid] = ok;
+            b.disabled = true;
+            b.classList.remove('pri');
+            b.classList.add(ok ? 'bok' : 'bbad');
+            b.textContent = ok ? '✓ 答對了' : '✗ 看解答';
+            if (ok) miniCelebrate();
+            document.querySelectorAll(`.btn.ch[data-q="${qid}"]`).forEach(x => x.disabled = true);
+            const ans = $('ans' + qid);
+            ans.innerHTML = answerHTML(q, ok, st);
+            ans.hidden = false;
+            updateScore();
+            finishIfDone();
+        };
+    });
+}
+
+function setLevel(v) {
+    level = v;
+    $('lvJ').classList.toggle('sel', v === 'junior');
+    $('lvS').classList.toggle('sel', v === 'senior');
+}
+
+function resetAll() {
+    Object.keys(results).forEach(k => delete results[k]);
+    Object.values(qState).forEach(st => { if (st.timer) clearTimeout(st.timer); });
+    Object.keys(qState).forEach(k => delete qState[k]);
+    Q.forEach(q => { qState[q.id] = { selA: '', selB: '', result: null, playing: null, timer: null }; });
+    $('qs').innerHTML = Q.map(questionHTML).join('');
+    $('summary').hidden = true;
+    wire();
+    updateScore();
+}
+
+// intro example
+$('exA').innerHTML = staffSVG(EX_A);
+$('exB').innerHTML = staffSVG(EX_B);
+$('lvJ').onclick = () => setLevel('junior');
+$('lvS').onclick = () => setLevel('senior');
+$('reset').onclick = resetAll;
+$('reset2').onclick = resetAll;
+setInterval(() => { try { if (ac && ac.state === 'suspended') ac.resume(); } catch (e) {} }, 500);
+resetAll();
+setLevel('junior');
+
+</script>
+</body></html>
